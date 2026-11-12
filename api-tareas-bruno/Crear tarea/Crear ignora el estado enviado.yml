@@ -1,0 +1,38 @@
+info:
+  name: Crear ignora el estado enviado
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tareas"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Nueva",
+        "estado": "completada"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 201", function () {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+        test("una tarea nueva siempre empieza pendiente", function () {
+          expect(res.getBody().estado).to.equal("pendiente");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

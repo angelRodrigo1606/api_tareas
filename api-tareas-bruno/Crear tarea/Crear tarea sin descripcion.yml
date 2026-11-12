@@ -1,0 +1,45 @@
+info:
+  name: Crear tarea sin descripcion
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tareas"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Llamar al banco"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 201", function () {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+        test("devuelve la tarea con sus campos", function () {
+          const tarea = res.getBody();
+          expect(tarea.id).to.be.a("number");
+          expect(tarea.titulo).to.equal("Llamar al banco");
+          expect(tarea.descripcion).to.equal(null);
+          expect(tarea.estado).to.equal("pendiente");
+        });
+
+        test("incluye la cabecera Location", function () {
+          expect(res.getHeader("location")).to.equal(bru.interpolate("{{baseUrl}}") + "/tareas/" + res.getBody().id);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

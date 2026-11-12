@@ -1,0 +1,11 @@
+info:
+  name: Listar tareas
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit
+
+docs:
+  content: "`GET /tareas` y `GET /tareas?estado=...` — lista todas las tareas o las filtra por estado (`pendiente`, `completada`)."
+  type: text/markdown

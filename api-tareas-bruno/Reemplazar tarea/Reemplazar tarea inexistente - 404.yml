@@ -1,0 +1,48 @@
+info:
+  name: Reemplazar tarea inexistente - 404
+  type: http
+  seq: 11
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/tareas/999999999"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Fantasma",
+        "estado": "pendiente"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 404", function () {
+          expect(res.getStatus()).to.equal(404);
+        });
+
+        test("el error es application/problem+json", function () {
+          expect(res.getHeader("content-type")).to.include("application/problem+json");
+        });
+
+        test("el cuerpo describe el error", function () {
+          const id = 999999999;
+          const error = res.getBody();
+          expect(error.status).to.equal(404);
+          expect(error.title).to.equal("Tarea no encontrada");
+          expect(error.detail).to.equal("No existe ninguna tarea con id " + id);
+          expect(error.id).to.equal(id);
+          expect(error.instance).to.equal("/tareas/999999999");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,38 @@
+info:
+  name: Reemplazar con estado en mayusculas
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/tareas/{{reemplazarId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Leer libro",
+        "estado": "COMPLETADA"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("acepta el estado y lo devuelve en minúsculas", function () {
+          expect(res.getBody().estado).to.equal("completada");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

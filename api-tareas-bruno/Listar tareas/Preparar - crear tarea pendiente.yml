@@ -1,0 +1,37 @@
+info:
+  name: Preparar - crear tarea pendiente
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tareas"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Tarea pendiente"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: bru.setVar("pendienteId", res.getBody().id);
+    - type: tests
+      code: |-
+        test("responde 201", function () {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
+
+docs: "Prepara los datos: crea una tarea y guarda su id en la variable `pendienteId`."

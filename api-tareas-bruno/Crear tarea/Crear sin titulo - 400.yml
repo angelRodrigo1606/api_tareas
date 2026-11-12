@@ -1,0 +1,33 @@
+info:
+  name: Crear sin titulo - 400
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tareas"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "descripcion": "Sin título"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 400", function () {
+          expect(res.getStatus()).to.equal(400);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

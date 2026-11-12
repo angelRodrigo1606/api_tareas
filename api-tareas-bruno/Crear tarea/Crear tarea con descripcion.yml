@@ -1,0 +1,53 @@
+info:
+  name: Crear tarea con descripcion
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tareas"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Comprar pan",
+        "descripcion": "Integral"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: bru.setVar("tareaCreadaId", res.getBody().id);
+    - type: tests
+      code: |-
+        test("responde 201", function () {
+          expect(res.getStatus()).to.equal(201);
+        });
+
+        test("responde JSON", function () {
+          expect(res.getHeader("content-type")).to.include("application/json");
+        });
+
+        test("devuelve la tarea con sus campos", function () {
+          const tarea = res.getBody();
+          expect(tarea.id).to.be.a("number");
+          expect(tarea.titulo).to.equal("Comprar pan");
+          expect(tarea.descripcion).to.equal("Integral");
+          expect(tarea.estado).to.equal("pendiente");
+        });
+
+        test("la cabecera Location apunta a la tarea creada", function () {
+          const id = res.getBody().id;
+          expect(res.getHeader("location")).to.equal(bru.interpolate("{{baseUrl}}") + "/tareas/" + id);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

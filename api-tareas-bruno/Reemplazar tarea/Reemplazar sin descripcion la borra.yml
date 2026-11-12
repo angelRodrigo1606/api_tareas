@@ -1,0 +1,42 @@
+info:
+  name: Reemplazar sin descripcion la borra
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/tareas/{{reemplazarId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Leer libro",
+        "estado": "pendiente"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("devuelve la tarea con sus campos", function () {
+          const tarea = res.getBody();
+          expect(tarea.id).to.be.a("number");
+          expect(tarea.titulo).to.equal("Leer libro");
+          expect(tarea.descripcion).to.equal(null);
+          expect(tarea.estado).to.equal("pendiente");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

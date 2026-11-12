@@ -1,0 +1,32 @@
+info:
+  name: Verificar que los 400 no modificaron la tarea
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: "{{baseUrl}}/tareas/{{reemplazarId}}"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("devuelve la tarea con sus campos", function () {
+          const tarea = res.getBody();
+          expect(tarea.id).to.be.a("number");
+          expect(tarea.titulo).to.equal("Leer libro");
+          expect(tarea.descripcion).to.equal(null);
+          expect(tarea.estado).to.equal("completada");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

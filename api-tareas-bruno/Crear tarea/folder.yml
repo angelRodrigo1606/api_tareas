@@ -1,0 +1,11 @@
+info:
+  name: Crear tarea
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit
+
+docs:
+  content: "`POST /tareas` — crea una tarea (título obligatorio, descripción opcional) y responde 201 con la cabecera `Location`."
+  type: text/markdown

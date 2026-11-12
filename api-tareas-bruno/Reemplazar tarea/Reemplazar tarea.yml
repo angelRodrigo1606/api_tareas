@@ -1,0 +1,51 @@
+info:
+  name: Reemplazar tarea
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/tareas/{{reemplazarId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Leer libro",
+        "descripcion": "Capítulo 4",
+        "estado": "completada"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("responde JSON", function () {
+          expect(res.getHeader("content-type")).to.include("application/json");
+        });
+
+        test("devuelve la tarea con sus campos", function () {
+          const tarea = res.getBody();
+          expect(tarea.id).to.be.a("number");
+          expect(tarea.titulo).to.equal("Leer libro");
+          expect(tarea.descripcion).to.equal("Capítulo 4");
+          expect(tarea.estado).to.equal("completada");
+        });
+
+        test("mantiene el id", function () {
+          expect(res.getBody().id).to.equal(bru.getVar("reemplazarId"));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

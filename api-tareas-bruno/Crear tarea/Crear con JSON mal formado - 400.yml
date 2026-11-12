@@ -1,0 +1,35 @@
+info:
+  name: Crear con JSON mal formado - 400
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tareas"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "se sustituye en el script previo"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: req.setBody("{ esto no es json");
+    - type: tests
+      code: |-
+        test("responde 400", function () {
+          expect(res.getStatus()).to.equal(400);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

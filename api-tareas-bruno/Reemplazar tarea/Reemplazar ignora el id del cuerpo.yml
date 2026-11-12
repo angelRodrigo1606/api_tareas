@@ -1,0 +1,39 @@
+info:
+  name: Reemplazar ignora el id del cuerpo
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/tareas/{{reemplazarId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "id": 999999999,
+        "titulo": "Leer libro",
+        "estado": "pendiente"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("usa el id de la URL", function () {
+          expect(res.getBody().id).to.equal(bru.getVar("reemplazarId"));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

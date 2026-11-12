@@ -1,0 +1,29 @@
+info:
+  name: Eliminar tarea
+  type: http
+  seq: 2
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/tareas/{{eliminarId}}"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 204", function () {
+          expect(res.getStatus()).to.equal(204);
+        });
+
+        test("no tiene cuerpo", function () {
+          const cuerpo = res.getBody();
+          expect(cuerpo === undefined || cuerpo === null || cuerpo === "").to.equal(true);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

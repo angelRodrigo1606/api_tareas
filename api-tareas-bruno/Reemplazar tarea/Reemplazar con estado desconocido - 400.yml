@@ -1,0 +1,34 @@
+info:
+  name: Reemplazar con estado desconocido - 400
+  type: http
+  seq: 9
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/tareas/{{reemplazarId}}"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "titulo": "Leer libro",
+        "estado": "archivada"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 400", function () {
+          expect(res.getStatus()).to.equal(400);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

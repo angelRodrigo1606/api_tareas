@@ -1,0 +1,30 @@
+info:
+  name: Filtrar sin distinguir mayusculas
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/tareas?estado=PENDIENTE"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("responde 200", function () {
+          expect(res.getStatus()).to.equal(200);
+        });
+
+        test("filtra igual que en minúsculas", function () {
+          const ids = res.getBody().map(function (t) { return t.id; });
+          expect(ids).to.include(bru.getVar("pendienteId"));
+          res.getBody().forEach(function (t) { expect(t.estado).to.equal("pendiente"); });
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

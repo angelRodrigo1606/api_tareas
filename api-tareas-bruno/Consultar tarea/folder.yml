@@ -1,0 +1,11 @@
+info:
+  name: Consultar tarea
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit
+
+docs:
+  content: "`GET /tareas/{id}` — devuelve una tarea; 404 con cuerpo de error si no existe."
+  type: text/markdown
